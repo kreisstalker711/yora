@@ -30,7 +30,7 @@ const PRODUCTS = [
     title: "Yora Extra Virgin Coconut Oil (Cold Centrifuged)",
     category: "coconut",
     price: 250,
-    oldPrice: 350,
+    oldPrice: 650,
     desc: "Extracted from fresh raw coconut milk using dynamic centrifuge separation under room temperature. Unrefined, highly bioavailable, and rich in Lauric Acid. Perfect for skin hydration, oil pulling, and delicate raw baking.",
     img: "/images/evcocard.png",
     rating: 5,

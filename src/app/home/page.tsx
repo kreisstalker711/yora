@@ -598,7 +598,7 @@ export default function HomePage() {
               <div>
                 <div className="flex items-baseline gap-2.5 mb-4 border-t border-slate-100 pt-4">
                   <span className="text-xl font-bold text-[#102316]">{formatPrice(250)}</span>
-                  <span className="text-xs text-slate-400 line-through font-medium">{formatPrice(350)}</span>
+                  <span className="text-xs text-slate-400 line-through font-medium">{formatPrice(650)}</span>
                 </div>
 
                 <div className="space-y-3">
