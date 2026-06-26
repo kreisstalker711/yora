@@ -64,12 +64,6 @@ export function Footer() {
                   <div className="text-[10px] text-[#FAF7F0]/50 font-light mt-0.5">Sun-dried seeds & jaggery</div>
                 </a>
               </li>
-              <li>
-                <a href="/shop?category=combos" className="group block text-left">
-                  <div className="font-bold text-white group-hover:text-[#7AA33C] text-[12px] transition-colors leading-tight">Value Gift Combos</div>
-                  <div className="text-[10px] text-[#FAF7F0]/50 font-light mt-0.5">Curated family organic trios</div>
-                </a>
-              </li>
             </ul>
           </div>
 

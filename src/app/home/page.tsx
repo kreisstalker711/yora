@@ -54,7 +54,6 @@ export default function HomePage() {
   const [quantities, setQuantities] = useState({
     coconut: 1,
     groundnut: 1,
-    combo: 1,
     sesame: 1,
   });
 
@@ -127,7 +126,7 @@ export default function HomePage() {
     }
   ];
 
-  const updateQty = (product: "coconut" | "groundnut" | "combo" | "sesame", increment: boolean) => {
+  const updateQty = (product: "coconut" | "groundnut" | "sesame", increment: boolean) => {
     setQuantities((prev) => ({
       ...prev,
       [product]: increment ? prev[product] + 1 : Math.max(1, prev[product] - 1),
@@ -176,7 +175,6 @@ export default function HomePage() {
   const handleAddToCart = (qty: number, productName: string) => {
     let productId = "coconut";
     if (productName.includes("Groundnut")) productId = "groundnut";
-    else if (productName.includes("Trio") || productName.includes("Combo")) productId = "combo";
     else if (productName.includes("Sesame")) productId = "sesame";
 
     const metadata: Record<string, { name: string; price: number; image: string }> = {
@@ -189,11 +187,6 @@ export default function HomePage() {
         name: "Cold-Pressed Groundnut (Peanut) Oil",
         price: 258,
         image: "/images/goilard.png"
-      },
-      combo: {
-        name: "Family Value Pack Trio Combo",
-        price: 1379,
-        image: "/images/prod_combo.png"
       },
       sesame: {
         name: "Cold-Pressed Sesame (Gingelly) Oil",
@@ -497,31 +490,25 @@ export default function HomePage() {
           </a>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
             {
               title: "Extra Virgin Coconut Oil",
               desc: "Cold Centrifuged raw milk extract",
-              img: "/images/cat_coconut.png",
+              img: "/images/evcocard.png",
               link: "/shop?category=coconut",
             },
             {
               title: "Cold-Pressed Groundnut Oil",
               desc: "Traditional Vaagai slow-pressed",
-              img: "/images/cat_groundnut.png",
+              img: "/images/goilard.png",
               link: "/shop?category=groundnut",
             },
             {
               title: "Cold-Pressed Sesame Oil",
               desc: "Sun-dried gingelly with palm jaggery",
-              img: "/images/cat_sesame.png",
+              img: "/images/sesamecard.png",
               link: "/shop?category=sesame",
-            },
-            {
-              title: "Family Value Combos",
-              desc: "Handcrafted healthy bundle sets",
-              img: "/images/cat_combo.png",
-              link: "/shop?category=combos",
             },
           ].map((cat, index) => (
             <a 
@@ -576,7 +563,7 @@ export default function HomePage() {
             </a>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Product 1: Coconut Oil (Active) */}
             <div className="bg-white border border-[#102316]/5 rounded-3xl p-6 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 relative flex flex-col justify-between text-left group">
               <div>
@@ -714,79 +701,6 @@ export default function HomePage() {
                     </button>
                     <button 
                       onClick={() => { handleAddToCart(quantities.groundnut, "Cold-Pressed Groundnut Oil (500ml)"); }}
-                      className="bg-[#7AA33C] hover:bg-[#8CB847] text-white py-3 rounded-xl transition duration-300 shadow-md shadow-[#7AA33C]/10"
-                    >
-                      Buy Now
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Product 3: Value Pack Combo */}
-            <div className="bg-white border border-[#102316]/5 rounded-3xl p-6 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 relative flex flex-col justify-between text-left group">
-              <div>
-                <span className="absolute top-4 left-4 bg-[#D4AF37] text-white text-[8px] font-extrabold py-1.5 px-3 rounded-full uppercase tracking-wider shadow-sm z-10">
-                  Value Combo
-                </span>
-                
-                <div className="h-56 flex items-center justify-center mb-6 overflow-hidden bg-[#F3ECE0]/30 rounded-2xl p-4 border border-[#102316]/5 relative">
-                  <img 
-                    src="/images/prod_combo.png" 
-                    alt="Family Value Pack Combo" 
-                    className="max-h-[85%] w-auto object-contain transition-transform duration-700 group-hover:scale-103" 
-                  />
-                </div>
-                
-                <h3 className="font-serif text-base font-bold text-[#102316] hover:text-[#7AA33C] transition-colors leading-tight min-h-12">
-                  Family Value Pack Trio Combo
-                </h3>
-                
-                <div className="flex items-center gap-1 mt-2 mb-4">
-                  <div className="flex gap-0.5">
-                    <StarIcon />
-                    <StarIcon />
-                    <StarIcon />
-                    <StarIcon />
-                    <StarIcon />
-                  </div>
-                  <span className="text-[10px] text-slate-500 font-bold ml-1.5">(26 Verified Reviews)</span>
-                </div>
-              </div>
-
-              <div>
-                <div className="flex items-baseline gap-2.5 mb-4 border-t border-slate-100 pt-4">
-                  <span className="text-xl font-bold text-[#102316]">{formatPrice(1379)}</span>
-                  <span className="text-xs text-slate-400 line-through font-medium">{formatPrice(1848)}</span>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between border border-[#102316]/10 rounded-xl overflow-hidden h-11 w-full bg-slate-50/50">
-                    <button 
-                      onClick={() => updateQty("combo", false)}
-                      className="px-4 h-full hover:bg-slate-200 text-slate-600 transition font-bold text-sm"
-                      aria-label="Decrease quantity"
-                    >
-                      -
-                    </button>
-                    <span className="text-xs font-bold font-mono">{quantities.combo}</span>
-                    <button 
-                      onClick={() => updateQty("combo", true)}
-                      className="px-4 h-full hover:bg-slate-200 text-slate-600 transition font-bold text-sm"
-                      aria-label="Increase quantity"
-                    >
-                      +
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-[10px] tracking-wider uppercase font-bold">
-                    <button 
-                      onClick={() => handleAddToCart(quantities.combo, "Family Value Pack Trio (1L x 3)")}
-                      className="border border-[#102316] hover:bg-[#102316] hover:text-white py-3 rounded-xl transition duration-300"
-                    >
-                      Add
-                    </button>
-                    <button 
-                      onClick={() => { handleAddToCart(quantities.combo, "Family Value Pack Trio (1L x 3)"); }}
                       className="bg-[#7AA33C] hover:bg-[#8CB847] text-white py-3 rounded-xl transition duration-300 shadow-md shadow-[#7AA33C]/10"
                     >
                       Buy Now

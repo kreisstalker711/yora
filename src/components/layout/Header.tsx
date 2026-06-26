@@ -161,7 +161,6 @@ export function Header() {
                 <a href="/shop?category=coconut" className="block px-5 py-2.5 text-[10px] tracking-wider uppercase hover:bg-[#102316]/5 hover:text-[#7AA33C] transition-colors font-bold">Extra Virgin Coconut Oil</a>
                 <a href="/shop?category=groundnut" className="block px-5 py-2.5 text-[10px] tracking-wider uppercase hover:bg-[#102316]/5 hover:text-[#7AA33C] transition-colors font-bold">Wood-Pressed Groundnut Oil</a>
                 <a href="/shop?category=sesame" className="block px-5 py-2.5 text-[10px] tracking-wider uppercase hover:bg-[#102316]/5 hover:text-[#7AA33C] transition-colors font-bold">Wood-Pressed Sesame Oil</a>
-                <a href="/shop?category=combos" className="block px-5 py-2.5 text-[10px] tracking-wider uppercase hover:bg-[#102316]/5 hover:text-[#7AA33C] transition-colors font-bold">Family Value Combos</a>
               </div>
             </div>
           </nav>

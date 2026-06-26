@@ -52,19 +52,6 @@ const PRODUCTS = [
     badge: "Best Seller"
   },
   {
-    id: "combo",
-    title: "Family Value Pack Trio Combo",
-    category: "combos",
-    price: 1379,
-    oldPrice: 1848,
-    desc: "A handcrafted family pack containing 1L Coconut Oil, 1L Groundnut Oil, and 1L Sesame Oil. Preserves chemical-free health across all culinary styles, ensuring a complete and wholesome organic kitchen journey.",
-    img: "/images/prod_combo.png",
-    rating: 5,
-    reviews: 26,
-    soldOut: false,
-    badge: "Value Set"
-  },
-  {
     id: "sesame",
     title: "Cold-Pressed Sesame (Gingelly) Oil",
     category: "sesame",
@@ -110,7 +97,6 @@ function ShopContent() {
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({
     coconut: 1,
     groundnut: 1,
-    combo: 1,
     sesame: 1
   });
 
@@ -140,11 +126,6 @@ function ShopContent() {
         name: "Cold-Pressed Groundnut (Peanut) Oil",
         price: 258,
         image: "/images/goilard.png"
-      },
-      combo: {
-        name: "Family Value Pack Trio Combo",
-        price: 1379,
-        image: "/images/prod_combo.png"
       },
       sesame: {
         name: "Cold-Pressed Sesame (Gingelly) Oil",
@@ -216,8 +197,7 @@ function ShopContent() {
           { label: "All Products", id: "all" },
           { label: "Coconut Oil", id: "coconut" },
           { label: "Groundnut Oil", id: "groundnut" },
-          { label: "Sesame Oil", id: "sesame" },
-          { label: "Value Combos", id: "combos" }
+          { label: "Sesame Oil", id: "sesame" }
         ].map((tab) => (
           <button
             key={tab.id}
