@@ -45,7 +45,7 @@ const PRODUCTS = [
     price: 258,
     oldPrice: 399,
     desc: "Pressed slowly using native Vaagai wood mortars from premium quality sun-dried peanuts in Tirupur. The oil has a rich nutty aroma and high smoke point, ideal for healthy deep frying, sautéing, and daily cooking.",
-    img: "/images/prod_groundnut.png",
+    img: "/images/goilard.png",
     rating: 5,
     reviews: 18,
     soldOut: false,
@@ -71,7 +71,7 @@ const PRODUCTS = [
     price: 160,
     oldPrice: 349,
     desc: "Slow-pressed in native black Vaagai wood structures using premium sun-dried sesame seeds and dark palm jaggery (karupatti). Preserves heart-healthy lignans and vitamins with a distinct rustic depth.",
-    img: "/images/prod_sesame.png",
+    img: "/images/sesamecard.png",
     rating: 5,
     reviews: 14,
     soldOut: false,
@@ -83,6 +83,29 @@ function ShopContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category") || "all";
   const [activeCategory, setActiveCategory] = useState(initialCategory);
+  const [selectedCurrency, setSelectedCurrency] = useState("INR");
+
+  useEffect(() => {
+    const updateCurrency = () => {
+      const stored = localStorage.getItem("yora_currency");
+      if (stored) setSelectedCurrency(stored);
+    };
+    updateCurrency();
+    window.addEventListener("storage", updateCurrency);
+    const timer = setInterval(updateCurrency, 1000);
+    return () => {
+      window.removeEventListener("storage", updateCurrency);
+      clearInterval(timer);
+    };
+  }, []);
+
+  const formatPrice = (inrValue: number) => {
+    if (selectedCurrency === "USD") {
+      const usdValue = inrValue / 83;
+      return `$${usdValue.toFixed(2)}`;
+    }
+    return `₹${inrValue.toLocaleString("en-IN")}.00`;
+  };
 
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({
     coconut: 1,
@@ -116,7 +139,7 @@ function ShopContent() {
       groundnut: {
         name: "Cold-Pressed Groundnut (Peanut) Oil",
         price: 258,
-        image: "/images/prod_groundnut.png"
+        image: "/images/goilard.png"
       },
       combo: {
         name: "Family Value Pack Trio Combo",
@@ -126,7 +149,7 @@ function ShopContent() {
       sesame: {
         name: "Cold-Pressed Sesame (Gingelly) Oil",
         price: 160,
-        image: "/images/prod_sesame.png"
+        image: "/images/sesamecard.png"
       }
     };
 
@@ -258,8 +281,8 @@ function ShopContent() {
               </p>
 
               <div className="flex items-baseline gap-3 pt-2">
-                <span className="text-2xl font-bold text-[#102316]">₹{product.price.toLocaleString("en-IN")}.00</span>
-                <span className="text-sm text-slate-400 line-through font-medium">₹{product.oldPrice.toLocaleString("en-IN")}.00</span>
+                <span className="text-2xl font-bold text-[#102316]">{formatPrice(product.price)}</span>
+                <span className="text-sm text-slate-400 line-through font-medium">{formatPrice(product.oldPrice)}</span>
               </div>
 
               {/* Actions */}

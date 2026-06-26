@@ -60,11 +60,22 @@ export function Header() {
       if (stored) setCartCount(parseInt(stored, 10));
     };
 
+    // Sync currency from localStorage
+    const updateCurrency = () => {
+      const stored = localStorage.getItem("yora_currency");
+      if (stored) setSelectedCurrency(stored);
+    };
+
     updateCart();
+    updateCurrency();
     window.addEventListener("storage", updateCart);
+    window.addEventListener("storage", updateCurrency);
     
     // Poll localstorage because storage event only fires on other windows
-    const timer2 = setInterval(updateCart, 1000);
+    const timer2 = setInterval(() => {
+      updateCart();
+      updateCurrency();
+    }, 1000);
 
     const timer = setInterval(() => {
       setAnnouncementIdx((prev) => (prev + 1) % announcements.length);
@@ -72,10 +83,17 @@ export function Header() {
 
     return () => {
       window.removeEventListener("storage", updateCart);
+      window.removeEventListener("storage", updateCurrency);
       clearInterval(timer);
       clearInterval(timer2);
     };
   }, []);
+
+  const changeCurrency = (currency: string) => {
+    setSelectedCurrency(currency);
+    localStorage.setItem("yora_currency", currency);
+    window.dispatchEvent(new Event("storage"));
+  };
 
   const handleNextAnnouncement = () => {
     setAnnouncementIdx((prev) => (prev + 1) % announcements.length);
@@ -149,17 +167,13 @@ export function Header() {
           </nav>
 
           {/* Central Logo Emblem - Using yra.png */}
-          <a href="/home" className="flex items-center gap-3.5 focus:outline-none transition group">
+          <a href="/home" className="flex items-center focus:outline-none transition group">
             <div className="relative w-16 h-10 overflow-hidden shrink-0 flex items-center justify-center">
               <img 
                 src="/yra.png" 
                 alt="Yora Logo" 
                 className="max-h-full w-auto object-contain transition-transform duration-300 group-hover:scale-105"
               />
-            </div>
-            <div className="flex flex-col text-left">
-              <span className="font-serif text-xl sm:text-2xl font-bold tracking-[0.15em] text-[#102316] leading-none">YORA</span>
-              <span className="text-[7px] font-bold tracking-[0.3em] text-[#7AA33C] uppercase mt-1">Organic Purity</span>
             </div>
           </a>
 
@@ -177,13 +191,13 @@ export function Header() {
               {currencyOpen && (
                 <div className="absolute right-0 top-full mt-2 bg-[#FAF7F0] border border-[#102316]/10 w-28 rounded-xl shadow-2xl overflow-hidden py-1 z-50 animate-fade-in">
                   <button 
-                    onClick={() => { setSelectedCurrency("INR"); setCurrencyOpen(false); }} 
+                    onClick={() => { changeCurrency("INR"); setCurrencyOpen(false); }} 
                     className="w-full text-left px-4 py-2 text-[10px] tracking-wider uppercase hover:bg-[#102316]/5 hover:text-[#7AA33C] font-bold text-slate-700"
                   >
                     🇮🇳 INR
                   </button>
                   <button 
-                    onClick={() => { setSelectedCurrency("USD"); setCurrencyOpen(false); }} 
+                    onClick={() => { changeCurrency("USD"); setCurrencyOpen(false); }} 
                     className="w-full text-left px-4 py-2 text-[10px] tracking-wider uppercase hover:bg-[#102316]/5 hover:text-[#7AA33C] font-bold text-slate-700"
                   >
                     🇺🇸 USD
@@ -245,13 +259,13 @@ export function Header() {
                 <span className="text-[10px] text-slate-500">Currency</span>
                 <div className="flex gap-2">
                   <button 
-                    onClick={() => setSelectedCurrency("INR")} 
+                    onClick={() => changeCurrency("INR")} 
                     className={`px-3 py-1 rounded-full text-[10px] font-bold border ${selectedCurrency === "INR" ? "bg-[#102316] text-[#FAF7F0] border-transparent" : "border-[#102316]/10 text-slate-700"}`}
                   >
                     🇮🇳 INR
                   </button>
                   <button 
-                    onClick={() => setSelectedCurrency("USD")} 
+                    onClick={() => changeCurrency("USD")} 
                     className={`px-3 py-1 rounded-full text-[10px] font-bold border ${selectedCurrency === "USD" ? "bg-[#102316] text-[#FAF7F0] border-transparent" : "border-[#102316]/10 text-slate-700"}`}
                   >
                     🇺🇸 USD

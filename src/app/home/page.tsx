@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Header } from "@/src/components/layout/Header";
 import { Footer } from "@/src/components/layout/Footer";
 
@@ -57,6 +57,48 @@ export default function HomePage() {
     combo: 1,
     sesame: 1,
   });
+
+  const [selectedCurrency, setSelectedCurrency] = useState("INR");
+  const storyVideoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (storyVideoRef.current) {
+        const rect = storyVideoRef.current.getBoundingClientRect();
+        const inView = rect.top < window.innerHeight && rect.bottom > 0;
+        if (inView) {
+          storyVideoRef.current.play().catch(e => {});
+        } else {
+          storyVideoRef.current.pause();
+        }
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Trigger once on mount
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const updateCurrency = () => {
+      const stored = localStorage.getItem("yora_currency");
+      if (stored) setSelectedCurrency(stored);
+    };
+    updateCurrency();
+    window.addEventListener("storage", updateCurrency);
+    const timer = setInterval(updateCurrency, 1000);
+    return () => {
+      window.removeEventListener("storage", updateCurrency);
+      clearInterval(timer);
+    };
+  }, []);
+
+  const formatPrice = (inrValue: number) => {
+    if (selectedCurrency === "USD") {
+      const usdValue = inrValue / 83;
+      return `$${usdValue.toFixed(2)}`;
+    }
+    return `₹${inrValue.toLocaleString("en-IN")}.00`;
+  };
 
   const craftSteps = [
     {
@@ -146,7 +188,7 @@ export default function HomePage() {
       groundnut: {
         name: "Cold-Pressed Groundnut (Peanut) Oil",
         price: 258,
-        image: "/images/prod_groundnut.png"
+        image: "/images/goilard.png"
       },
       combo: {
         name: "Family Value Pack Trio Combo",
@@ -156,7 +198,7 @@ export default function HomePage() {
       sesame: {
         name: "Cold-Pressed Sesame (Gingelly) Oil",
         price: 160,
-        image: "/images/prod_sesame.png"
+        image: "/images/sesamecard.png"
       }
     };
 
@@ -305,79 +347,62 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. Meet Yora (Editorial Brand Story with alternating grids) */}
-      <section className="py-24 sm:py-32 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-center">
-          {/* Left Text Content */}
-          <div className="lg:col-span-6 text-left space-y-8 order-2 lg:order-1">
-            <div className="space-y-3">
-              <span className="text-[#7AA33C] font-extrabold text-[10px] sm:text-xs tracking-[0.3em] uppercase block font-bold">
-                MEET YORA
-              </span>
-              <h2 className="font-serif text-3xl sm:text-5xl font-bold leading-tight text-[#102316]">
-                Rooted in Tradition, <br />
-                <span className="text-[#7AA33C] italic font-normal">Nourished by Purity</span>
-              </h2>
-            </div>
-            
-            <div className="w-16 h-[2px] bg-[#D4AF37]/60"></div>
-            
-            <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-light">
-              At Yora, we believe food should be wholesome, nourishing, and true to its natural origins. Our journey started on private organic farms in Udumalpet, seeking a return to traditional wood pressing structures that extract oil without destroying temperature-sensitive enzymes.
-            </p>
-            <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-light">
-              Our promise is absolute: 100% raw, unrefined, and organic cold-pressed oil, clear of chemicals, sulphur, or artificial preservation methods. The result is oil rich in aroma, natural color, and raw nutrients that support cardiovascular health, skincare, and gourmet food preparation.
-            </p>
+      {/* 5. Meet Yora (Editorial Brand Story with single centered column) */}
+      <section className="py-24 sm:py-32 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-12">
+        {/* Heading */}
+        <div className="space-y-3 max-w-2xl mx-auto">
+          <span className="text-[#7AA33C] font-extrabold text-[10px] sm:text-xs tracking-[0.3em] uppercase block font-bold">
+            MEET YORA
+          </span>
+          <h2 className="font-serif text-3xl sm:text-5xl font-bold leading-tight text-[#102316]">
+            Rooted in Tradition, <br />
+            <span className="text-[#7AA33C] italic font-normal">Nourished by Purity</span>
+          </h2>
+          <div className="w-16 h-[2px] bg-[#D4AF37]/60 mx-auto mt-4"></div>
+        </div>
+        
+        {/* Detail/Text */}
+        <div className="max-w-3xl mx-auto text-slate-600 text-sm sm:text-base leading-relaxed font-light space-y-6">
+          <p>
+            At Yora, we believe food should be wholesome, nourishing, and true to its natural origins. Our journey started on private organic farms in Udumalpet, seeking a return to traditional wood pressing structures that extract oil without destroying temperature-sensitive enzymes.
+          </p>
+          <p>
+            Our promise is absolute: 100% raw, unrefined, and organic cold-pressed oil, clear of chemicals, sulphur, or artificial preservation methods. The result is oil rich in aroma, natural color, and raw nutrients that support cardiovascular health, skincare, and gourmet food preparation.
+          </p>
 
-            <div className="grid grid-cols-2 gap-6 pt-4">
-              <div className="border-l-2 border-[#7AA33C] pl-4">
-                <p className="font-serif text-2xl font-bold text-[#102316]">0%</p>
-                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Chemicals & Sulphur</p>
-              </div>
-              <div className="border-l-2 border-[#D4AF37] pl-4">
-                <p className="font-serif text-2xl font-bold text-[#102316]">100%</p>
-                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Wood Pressed (Vaagai)</p>
-              </div>
+          <div className="flex justify-center gap-12 pt-4">
+            <div className="border-l-2 border-[#7AA33C] pl-4 text-left">
+              <p className="font-serif text-2xl font-bold text-[#102316]">0%</p>
+              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Chemicals & Sulphur</p>
             </div>
-
-            <div className="pt-4">
-              <a 
-                href="/about" 
-                className="inline-flex items-center gap-3 bg-[#102316] hover:bg-[#7AA33C] text-white text-xs font-bold px-8 py-4.5 rounded-full transition-all duration-300 hover:shadow-xl uppercase tracking-widest"
-              >
-                Discover Our Heritage
-                <ArrowIcon className="size-4" direction="right" />
-              </a>
+            <div className="border-l-2 border-[#D4AF37] pl-4 text-left">
+              <p className="font-serif text-2xl font-bold text-[#102316]">100%</p>
+              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-1">Wood Pressed (Vaagai)</p>
             </div>
           </div>
+        </div>
 
-          {/* Right Image Layout - Overlapping frames */}
-          <div className="lg:col-span-6 order-1 lg:order-2 flex justify-center">
-            <div className="relative w-full max-w-md">
-              {/* Main Lifestyle Image */}
-              <div className="relative rounded-[2rem] overflow-hidden aspect-[4/5] border border-[#102316]/5 shadow-2xl group">
-                <img 
-                  src="/loginsideimage.png" 
-                  alt="Yora Organic Dropper Bottle Lifestyle" 
-                  className="w-full h-full object-cover transition-transform duration-10000 hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#102316]/40 via-transparent to-transparent"></div>
-              </div>
+        {/* Video centered below details */}
+        <div className="max-w-3xl mx-auto rounded-[2rem] overflow-hidden border border-[#102316]/5 shadow-2xl bg-white relative">
+          <video
+            ref={storyVideoRef}
+            src="/yoravideo.mp4"
+            controls
+            playsInline
+            loop
+            className="w-full h-auto object-cover aspect-video"
+          />
+        </div>
 
-              {/* Smaller overlapping card */}
-              <div className="absolute -bottom-8 -left-8 bg-[#FAF7F0] border border-[#102316]/10 p-6 rounded-2xl shadow-xl max-w-xs text-left hidden sm:block">
-                <p className="font-serif text-[#102316] text-lg font-bold leading-tight">
-                  “The oil smells of fresh sun-dried coconuts.”
-                </p>
-                <div className="flex items-center gap-2 mt-4">
-                  <div className="w-6 h-6 rounded-full overflow-hidden border border-[#D4AF37]/50">
-                    <img src="/loginsideimage.png" alt="Ramya testimonial" className="w-full h-full object-cover scale-150" />
-                  </div>
-                  <span className="text-[10px] font-bold tracking-wider uppercase text-slate-500">Ramya, Certified Buyer</span>
-                </div>
-              </div>
-            </div>
-          </div>
+        {/* CTA Button */}
+        <div className="pt-4">
+          <a 
+            href="/about" 
+            className="inline-flex items-center gap-3 bg-[#102316] hover:bg-[#7AA33C] text-white text-xs font-bold px-8 py-4.5 rounded-full transition-all duration-300 hover:shadow-xl uppercase tracking-widest"
+          >
+            Discover Our Heritage
+            <ArrowIcon className="size-4" direction="right" />
+          </a>
         </div>
       </section>
 
@@ -442,8 +467,8 @@ export default function HomePage() {
               </div>
 
               <div className="flex items-center gap-3 pt-8 border-t border-slate-100 mt-6 relative z-10">
-                <div className="relative w-8 h-8 rounded-full overflow-hidden border border-[#D4AF37]/50 shrink-0">
-                  <img src="/loginsideimage.png" alt="QC check" className="w-full h-full object-cover scale-150" />
+                <div className="relative w-8 h-8 rounded-full overflow-hidden border border-[#D4AF37]/50 bg-white flex items-center justify-center p-0.5 shrink-0">
+                  <img src="/yora.png" alt="QC check" className="w-full h-full object-contain" />
                 </div>
                 <span className="text-[10px] font-bold tracking-wider uppercase text-slate-500">Certified Process &middot; Udumalpet Unit</span>
               </div>
@@ -585,8 +610,8 @@ export default function HomePage() {
 
               <div>
                 <div className="flex items-baseline gap-2.5 mb-4 border-t border-slate-100 pt-4">
-                  <span className="text-xl font-bold text-[#102316]">₹250.00</span>
-                  <span className="text-xs text-slate-400 line-through font-medium">₹350.00</span>
+                  <span className="text-xl font-bold text-[#102316]">{formatPrice(250)}</span>
+                  <span className="text-xs text-slate-400 line-through font-medium">{formatPrice(350)}</span>
                 </div>
 
                 <div className="space-y-3">
@@ -634,7 +659,7 @@ export default function HomePage() {
                 
                 <div className="h-56 flex items-center justify-center mb-6 overflow-hidden bg-[#F3ECE0]/30 rounded-2xl p-4 border border-[#102316]/5 relative">
                   <img 
-                    src="/images/prod_groundnut.png" 
+                    src="/images/goilard.png" 
                     alt="Cold-Pressed Groundnut (Peanut) Oil" 
                     className="max-h-[85%] w-auto object-contain transition-transform duration-700 group-hover:scale-103" 
                   />
@@ -658,8 +683,8 @@ export default function HomePage() {
 
               <div>
                 <div className="flex items-baseline gap-2.5 mb-4 border-t border-slate-100 pt-4">
-                  <span className="text-xl font-bold text-[#102316]">₹258.00</span>
-                  <span className="text-xs text-slate-400 line-through font-medium">₹399.00</span>
+                  <span className="text-xl font-bold text-[#102316]">{formatPrice(258)}</span>
+                  <span className="text-xs text-slate-400 line-through font-medium">{formatPrice(399)}</span>
                 </div>
 
                 <div className="space-y-3">
@@ -731,8 +756,8 @@ export default function HomePage() {
 
               <div>
                 <div className="flex items-baseline gap-2.5 mb-4 border-t border-slate-100 pt-4">
-                  <span className="text-xl font-bold text-[#102316]">₹1,379.00</span>
-                  <span className="text-xs text-slate-400 line-through font-medium">₹1,848.00</span>
+                  <span className="text-xl font-bold text-[#102316]">{formatPrice(1379)}</span>
+                  <span className="text-xs text-slate-400 line-through font-medium">{formatPrice(1848)}</span>
                 </div>
 
                 <div className="space-y-3">
@@ -780,7 +805,7 @@ export default function HomePage() {
                 
                 <div className="h-56 flex items-center justify-center mb-6 overflow-hidden bg-[#F3ECE0]/30 rounded-2xl p-4 border border-[#102316]/5 relative">
                   <img 
-                    src="/images/prod_sesame.png" 
+                    src="/images/sesamecard.png" 
                     alt="Cold-Pressed Sesame (Gingelly) Oil" 
                     className="max-h-[85%] w-auto object-contain transition-transform duration-700 group-hover:scale-103" 
                   />
@@ -804,8 +829,8 @@ export default function HomePage() {
 
               <div>
                 <div className="flex items-baseline gap-2.5 mb-4 border-t border-slate-100 pt-4">
-                  <span className="text-xl font-bold text-[#102316]">₹160.00</span>
-                  <span className="text-xs text-slate-400 line-through font-medium">₹349.00</span>
+                  <span className="text-xl font-bold text-[#102316]">{formatPrice(160)}</span>
+                  <span className="text-xs text-slate-400 line-through font-medium">{formatPrice(349)}</span>
                 </div>
 
                 <div className="space-y-3">

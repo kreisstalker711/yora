@@ -16,6 +16,7 @@ export default function CartPage() {
   const [mounted, setMounted] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [checkoutSuccess, setCheckoutSuccess] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState("INR");
 
   useEffect(() => {
     setMounted(true);
@@ -27,7 +28,27 @@ export default function CartPage() {
         setCartItems([]);
       }
     }
+
+    const updateCurrency = () => {
+      const storedCurrency = localStorage.getItem("yora_currency");
+      if (storedCurrency) setSelectedCurrency(storedCurrency);
+    };
+    updateCurrency();
+    window.addEventListener("storage", updateCurrency);
+    const timer = setInterval(updateCurrency, 1000);
+    return () => {
+      window.removeEventListener("storage", updateCurrency);
+      clearInterval(timer);
+    };
   }, []);
+
+  const formatPrice = (inrValue: number) => {
+    if (selectedCurrency === "USD") {
+      const usdValue = inrValue / 83;
+      return `$${usdValue.toFixed(2)}`;
+    }
+    return `₹${inrValue.toLocaleString("en-IN")}.00`;
+  };
 
   const saveCart = (newItems: CartItem[]) => {
     setCartItems(newItems);
@@ -140,7 +161,7 @@ export default function CartPage() {
                     {/* Info */}
                     <div className="flex-grow text-center sm:text-left space-y-2">
                       <h4 className="font-serif text-base font-bold text-[#102316] leading-snug">{item.name}</h4>
-                      <p className="text-xs text-[#7AA33C] font-bold">₹{item.price.toFixed(2)} / unit</p>
+                      <p className="text-xs text-[#7AA33C] font-bold">{formatPrice(item.price)} / unit</p>
                     </div>
 
                     {/* Quantity Selector & Price */}
@@ -164,7 +185,7 @@ export default function CartPage() {
                       </div>
 
                       <div className="text-right font-bold w-20">
-                        <p className="text-sm">₹{(item.price * item.quantity).toFixed(2)}</p>
+                        <p className="text-sm">{formatPrice(item.price * item.quantity)}</p>
                         <button
                           onClick={() => removeItem(item.id)}
                           className="text-[10px] text-red-500 hover:text-red-700 font-bold uppercase tracking-wider mt-1 transition-colors"
@@ -184,24 +205,24 @@ export default function CartPage() {
                 <div className="space-y-3 text-xs sm:text-sm text-slate-600 font-medium">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span className="text-[#102316] font-bold">₹{subtotal.toFixed(2)}</span>
+                    <span className="text-[#102316] font-bold">{formatPrice(subtotal)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping Fee</span>
                     <span className="text-[#102316] font-bold">
-                      {shippingFee === 0 ? <span className="text-[#7AA33C]">Free</span> : `₹${shippingFee.toFixed(2)}`}
+                      {shippingFee === 0 ? <span className="text-[#7AA33C]">Free</span> : formatPrice(shippingFee)}
                     </span>
                   </div>
                   {!isFreeShipping && (
                     <p className="text-[10px] text-slate-400 font-normal leading-normal italic">
-                      Add ₹{(999 - subtotal).toFixed(2)} more for Free Shipping!
+                      Add {formatPrice(999 - subtotal)} more for Free Shipping!
                     </p>
                   )}
                 </div>
 
                 <div className="border-t border-slate-100 pt-4 flex justify-between items-baseline">
                   <span className="font-serif text-base font-bold">Total Amount</span>
-                  <span className="text-2xl font-bold text-[#102316]">₹{total.toFixed(2)}</span>
+                  <span className="text-2xl font-bold text-[#102316]">{formatPrice(total)}</span>
                 </div>
 
                 <button

@@ -6,10 +6,13 @@ import { Checkbox } from "@/src/components/ui/checkbox";
 import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
 import { Logo } from "./Logo";
+import { auth } from "@/src/lib/firebase";
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 type Errors = {
   identifier?: string;
   password?: string;
+  submit?: string;
 };
 
 function UserIcon() {
@@ -71,6 +74,7 @@ export function LoginForm() {
   const rememberId = useId();
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Errors>({});
+  const [loading, setLoading] = useState(false);
 
   function validate(identifier: string, password: string) {
     const nextErrors: Errors = {};
@@ -79,12 +83,13 @@ export function LoginForm() {
     const phonePattern = /^[+()\-\s\d]{8,18}$/;
 
     if (!normalizedIdentifier) {
-      nextErrors.identifier = "Enter your email address or phone number.";
-    } else if (
-      !emailPattern.test(normalizedIdentifier) &&
-      !phonePattern.test(normalizedIdentifier)
-    ) {
-      nextErrors.identifier = "Use a valid email address or phone number.";
+      nextErrors.identifier = "Enter your email address.";
+    } else if (!emailPattern.test(normalizedIdentifier)) {
+      if (phonePattern.test(normalizedIdentifier)) {
+        nextErrors.identifier = "Phone login is currently unavailable. Please use email or sign in with Google.";
+      } else {
+        nextErrors.identifier = "Use a valid email address.";
+      }
     }
 
     if (!password) {
@@ -96,18 +101,63 @@ export function LoginForm() {
     return nextErrors;
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const nextErrors = validate(
-      String(formData.get("identifier") ?? ""),
-      String(formData.get("password") ?? ""),
-    );
+    const identifier = String(formData.get("identifier") ?? "");
+    const password = String(formData.get("password") ?? "");
 
-    setErrors(nextErrors);
+    const nextErrors = validate(identifier, password);
 
-    if (Object.keys(nextErrors).length === 0) {
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
+      return;
+    }
+
+    setErrors({});
+    setLoading(true);
+
+    try {
+      await signInWithEmailAndPassword(auth, identifier, password);
       window.location.href = "/home";
+    } catch (error: any) {
+      console.error("Authentication error:", error);
+      let errorMsg = "Failed to sign in. Please verify your email/password.";
+      if (error.code === "auth/invalid-credential" || error.code === "auth/wrong-password" || error.code === "auth/user-not-found") {
+        errorMsg = "Invalid email or password. Please try again.";
+      } else if (error.code === "auth/too-many-requests") {
+        errorMsg = "Too many login attempts. Please try again later or reset your password.";
+      } else if (error.code === "auth/network-request-failed") {
+        errorMsg = "Network error. Please check your internet connection.";
+      } else {
+        errorMsg = error.message || errorMsg;
+      }
+      setErrors({ submit: errorMsg });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleGoogleLogin() {
+    setLoading(true);
+    setErrors({});
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+      window.location.href = "/home";
+    } catch (error: any) {
+      console.error("Google Authentication error:", error);
+      let errorMsg = "Failed to sign in with Google.";
+      if (error.code === "auth/popup-closed-by-user") {
+        errorMsg = "Login popup closed before completion.";
+      } else if (error.code === "auth/network-request-failed") {
+        errorMsg = "Network error. Please check your internet connection.";
+      } else {
+        errorMsg = error.message || errorMsg;
+      }
+      setErrors({ submit: errorMsg });
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -128,6 +178,11 @@ export function LoginForm() {
         </div>
 
         <form className="space-y-6" noValidate onSubmit={handleSubmit}>
+          {errors.submit && (
+            <div className="p-4 rounded-xl bg-red-50 text-red-600 text-xs font-semibold border border-red-100 text-center animate-fade-in">
+              {errors.submit}
+            </div>
+          )}
           <div className="space-y-2 text-left">
             <Label htmlFor={identifierId} className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Email or Phone Number</Label>
             <div className="relative">
@@ -203,9 +258,10 @@ export function LoginForm() {
 
           <Button 
             type="submit" 
-            className="w-full h-12 bg-[#102316] hover:bg-[#7AA33C] text-white rounded-xl text-xs font-bold uppercase tracking-widest transition duration-300 shadow-md shadow-[#102316]/10"
+            disabled={loading}
+            className="w-full h-12 bg-[#102316] hover:bg-[#7AA33C] text-white rounded-xl text-xs font-bold uppercase tracking-widest transition duration-300 shadow-md shadow-[#102316]/10 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Login
+            {loading ? "Signing In..." : "Login"}
           </Button>
 
           <div className="flex items-center gap-4 text-xs text-slate-400 font-light">
@@ -215,12 +271,15 @@ export function LoginForm() {
           </div>
 
           <Button 
+            type="button"
             variant="outline" 
-            className="w-full h-12 border border-[#102316]/10 hover:border-[#102316]/30 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold uppercase tracking-widest rounded-xl transition duration-300 flex items-center justify-center gap-2" 
+            disabled={loading}
+            onClick={handleGoogleLogin}
+            className="w-full h-12 border border-[#102316]/10 hover:border-[#102316]/30 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold uppercase tracking-widest rounded-xl transition duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" 
             aria-label="Continue with Google"
           >
             <GoogleIcon />
-            Continue with Google
+            {loading ? "Loading..." : "Continue with Google"}
           </Button>
 
           <p className="text-center text-xs text-slate-500 font-light">
