@@ -10,8 +10,8 @@ function StarIcon({ filled = true }: { filled?: boolean }) {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      fill={filled ? "#D4AF37" : "none"}
-      stroke="#D4AF37"
+      fill={filled ? "#C89B3C" : "none"}
+      stroke="#C89B3C"
       strokeWidth={1.5}
       className="size-3.5"
     >
@@ -112,29 +112,8 @@ function ShopContent() {
     }));
   };
 
-  const handleAddToCart = (productId: string, productName: string) => {
+  const handleAddToCart = (productId: string, productName: string, price: number, image: string) => {
     const qty = quantities[productId] || 1;
-    
-    // Add item to structured cart items list
-    const metadata: Record<string, { name: string; price: number; image: string }> = {
-      coconut: {
-        name: "Yora Extra Virgin Coconut Oil (Cold Centrifuged)",
-        price: 250,
-        image: "/images/evcocard.png"
-      },
-      groundnut: {
-        name: "Cold-Pressed Groundnut (Peanut) Oil",
-        price: 258,
-        image: "/images/goilard.png"
-      },
-      sesame: {
-        name: "Cold-Pressed Sesame (Gingelly) Oil",
-        price: 160,
-        image: "/images/sesamecard.png"
-      }
-    };
-
-    const product = metadata[productId] || { name: productName, price: 250, image: "/images/prod_coconut.png" };
     const storedItems = localStorage.getItem("yora_cart_items");
     let items: any[] = [];
     if (storedItems) {
@@ -151,30 +130,26 @@ function ShopContent() {
     } else {
       items.push({
         id: productId,
-        name: product.name,
-        price: product.price,
-        image: product.image,
+        name: productName,
+        price: price,
+        image: image,
         quantity: qty
       });
     }
 
     localStorage.setItem("yora_cart_items", JSON.stringify(items));
-
-    // Update total count
     const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
     localStorage.setItem("yora_cart_count", totalCount.toString());
-    
-    // Dispatch storage event to update Header
     window.dispatchEvent(new Event("storage"));
 
     // Toast
     const toast = document.createElement("div");
-    toast.className = "fixed bottom-8 right-8 bg-[#102316]/95 backdrop-blur-md text-[#FAF7F0] px-6 py-4 rounded-2xl shadow-2xl border border-[#7AA33C]/30 text-sm font-sans flex items-center gap-3 z-50 transition-all duration-500 translate-y-4 opacity-0";
+    toast.className = "fixed bottom-8 right-8 glass-card bg-white/95 px-6 py-4 rounded-2xl shadow-2xl border border-secondary/30 text-sm font-sans flex items-center gap-3 z-50 transition-all duration-500 translate-y-4 opacity-0";
     toast.innerHTML = `
-      <span class="w-2 h-2 rounded-full bg-[#7AA33C] animate-pulse"></span>
+      <span class="w-2.5 h-2.5 rounded-full bg-[#63C132] animate-ping"></span>
       <div>
-        <p class="font-bold text-xs uppercase tracking-wider text-[#7AA33C]">Added to Cart</p>
-        <p class="text-xs text-[#FAF7F0]/80">${qty}x ${productName}</p>
+        <p class="font-bold text-xs uppercase tracking-wider text-[#0F3D2E]">Added to Cart</p>
+        <p class="text-xs text-slate-600">${qty}x ${productName}</p>
       </div>
     `;
     document.body.appendChild(toast);
@@ -190,151 +165,159 @@ function ShopContent() {
     : PRODUCTS.filter(p => p.category === activeCategory);
 
   return (
-    <div className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Category Tabs */}
-      <div className="flex flex-wrap justify-center gap-3 mb-16">
-        {[
-          { label: "All Products", id: "all" },
-          { label: "Coconut Oil", id: "coconut" },
-          { label: "Groundnut Oil", id: "groundnut" },
-          { label: "Sesame Oil", id: "sesame" }
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveCategory(tab.id)}
-            className={`px-6 py-3 rounded-full text-xs font-bold tracking-widest uppercase transition-all duration-300 ${
-              activeCategory === tab.id
-                ? "bg-[#102316] text-[#FAF7F0] shadow-lg shadow-[#102316]/10"
-                : "border border-[#102316]/10 text-[#102316]/70 bg-white hover:bg-slate-50"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+    <div className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      
+      {/* Category Tabs inside Glass Card */}
+      <div className="flex justify-center mb-16">
+        <div className="glass-card bg-white/80 p-2 rounded-full inline-flex flex-wrap gap-1 border border-primary/5">
+          {[
+            { label: "All Products", id: "all" },
+            { label: "Coconut Oil", id: "coconut" },
+            { label: "Groundnut Oil", id: "groundnut" },
+            { label: "Sesame Oil", id: "sesame" }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveCategory(tab.id)}
+              className={`px-6 py-2.5 rounded-full text-[10px] font-bold tracking-widest uppercase transition-all duration-300 ${
+                activeCategory === tab.id
+                  ? "bg-gradient-to-r from-[#63C132] to-[#0F3D2E] text-white shadow-md shadow-primary/10"
+                  : "text-[#182218]/70 hover:text-[#63C132]"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Products Editorial Grid */}
-      <div className="space-y-16">
+      {/* Products Luxury Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredProducts.map((product) => (
           <div 
             key={product.id}
-            className="bg-white border border-[#102316]/5 rounded-[2.5rem] p-8 sm:p-12 shadow-sm hover:shadow-xl transition-all duration-500 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center"
+            className="glass-card bg-white/80 rounded-[3rem] p-6 shadow-xl hover:-translate-y-3 hover:shadow-2xl transition-all duration-500 flex flex-col justify-between"
           >
-            {/* Left Product Photo Column */}
-            <div className="lg:col-span-5 flex justify-center bg-[#F3ECE0]/30 rounded-3xl p-6 h-80 relative overflow-hidden border border-[#102316]/5">
-              <span className={`absolute top-4 left-4 text-[8px] font-extrabold py-1.5 px-3.5 rounded-full uppercase tracking-wider shadow-sm z-10 ${
-                product.soldOut ? "bg-slate-400 text-white" : "bg-[#7AA33C] text-white"
-              }`}>
-                {product.badge}
-              </span>
-              <img 
-                src={product.img} 
-                alt={product.title} 
-                className={`max-h-full w-auto object-contain transition-transform duration-700 hover:scale-105 filter drop-shadow-md ${
-                  product.soldOut ? "saturate-50 opacity-80" : ""
-                }`} 
-              />
-            </div>
-
-            {/* Right Product Copy Column */}
-            <div className="lg:col-span-7 text-left space-y-6">
-              <div className="space-y-2">
-                <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#102316] leading-tight">
-                  {product.title}
-                </h3>
-                
-                {/* Rating details */}
-                <div className="flex items-center gap-1.5">
-                  <div className="flex gap-0.5">
-                    <StarIcon />
-                    <StarIcon />
-                    <StarIcon />
-                    <StarIcon />
-                    <StarIcon />
-                  </div>
-                  <span className="text-[10px] text-slate-500 font-bold ml-1">({product.reviews} customer reviews)</span>
+            <div className="space-y-6">
+              <div className="flex justify-between items-start">
+                <span className={`text-[9px] font-extrabold py-1 px-3.5 rounded-full uppercase tracking-wider shadow-sm z-10 ${
+                  product.soldOut ? "bg-slate-400 text-white" : "bg-[#C89B3C] text-white"
+                }`}>
+                  {product.badge}
+                </span>
+                <div className="flex gap-0.5">
+                  <StarIcon />
+                  <StarIcon />
+                  <StarIcon />
+                  <StarIcon />
+                  <StarIcon />
                 </div>
               </div>
 
-              <p className="text-slate-600 text-sm leading-relaxed font-light">
-                {product.desc}
-              </p>
-
-              <div className="flex items-baseline gap-3 pt-2">
-                <span className="text-2xl font-bold text-[#102316]">{formatPrice(product.price)}</span>
-                <span className="text-sm text-slate-400 line-through font-medium">{formatPrice(product.oldPrice)}</span>
+              {/* Product Photo Box */}
+              <div className="relative group overflow-hidden rounded-3xl aspect-square flex items-center justify-center bg-gradient-to-b from-white to-[#F4FCEF]/70 border border-primary/5">
+                <img 
+                  src={product.img} 
+                  alt={product.title} 
+                  className={`h-48 w-auto object-contain transition-transform duration-700 group-hover:scale-110 filter drop-shadow-md ${
+                    product.soldOut ? "saturate-50 opacity-80" : ""
+                  }`} 
+                />
               </div>
 
-              {/* Actions */}
-              <div className="pt-4 border-t border-slate-100 flex flex-wrap gap-4 items-center">
+              <div className="text-left space-y-3">
+                <h3 className="font-serif text-lg font-bold text-[#0F3D2E] leading-snug min-h-[3.5rem]">
+                  {product.title}
+                </h3>
+                <p className="text-slate-500 text-xs font-light leading-relaxed line-clamp-3">
+                  {product.desc}
+                </p>
+              </div>
+            </div>
+
+            <div className="pt-6 mt-6 border-t border-slate-100 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-xl font-bold text-[#0F3D2E]">{formatPrice(product.price)}</span>
+                  <span className="text-xs text-slate-400 line-through font-medium">{formatPrice(product.oldPrice)}</span>
+                </div>
+
+                {!product.soldOut && (
+                  <div className="flex items-center border border-[#182218]/15 rounded-full overflow-hidden">
+                    <button 
+                      onClick={() => updateQty(product.id, false)}
+                      className="px-3 py-1 text-xs hover:bg-[#182218]/5 transition-colors font-bold"
+                    >
+                      -
+                    </button>
+                    <span className="px-3 text-xs font-bold font-mono">{quantities[product.id] || 1}</span>
+                    <button 
+                      onClick={() => updateQty(product.id, true)}
+                      className="px-3 py-1 text-xs hover:bg-[#182218]/5 transition-colors font-bold"
+                    >
+                      +
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Action buttons */}
+              <div className="space-y-2">
                 {product.soldOut ? (
                   <button 
                     disabled 
-                    className="bg-slate-100 text-slate-400 text-xs font-bold tracking-widest uppercase px-10 py-4.5 rounded-full cursor-not-allowed w-full sm:w-auto"
+                    className="bg-slate-100 text-slate-400 text-[10px] font-bold tracking-widest uppercase py-3.5 rounded-full cursor-not-allowed w-full"
                   >
                     Out of Stock - Restocking
                   </button>
                 ) : (
-                  <>
-                    {/* Quantity selectors */}
-                    <div className="flex items-center justify-between border border-[#102316]/10 rounded-full overflow-hidden h-12 w-32 bg-slate-50/50">
-                      <button 
-                        onClick={() => updateQty(product.id, false)}
-                        className="px-4 h-full hover:bg-slate-200 text-slate-600 transition font-bold text-sm"
-                        aria-label="Decrease quantity"
-                      >
-                        -
-                      </button>
-                      <span className="text-xs font-bold font-mono">{quantities[product.id] || 1}</span>
-                      <button 
-                        onClick={() => updateQty(product.id, true)}
-                        className="px-4 h-full hover:bg-slate-200 text-slate-600 transition font-bold text-sm"
-                        aria-label="Increase quantity"
-                      >
-                        +
-                      </button>
-                    </div>
-
-                    <div className="flex gap-3 w-full sm:w-auto flex-grow max-w-sm">
-                      <button 
-                        onClick={() => handleAddToCart(product.id, product.title)}
-                        className="border border-[#102316] hover:bg-[#102316] hover:text-white px-8 py-3.5 rounded-full text-xs font-bold uppercase tracking-widest transition duration-300 flex-1"
-                      >
-                        Add to Cart
-                      </button>
-                      <button 
-                        onClick={() => { handleAddToCart(product.id, product.title); }}
-                        className="bg-[#7AA33C] hover:bg-[#8CB847] text-white px-8 py-3.5 rounded-full text-xs font-bold uppercase tracking-widest transition duration-300 shadow-md shadow-[#7AA33C]/10 flex-1"
-                      >
-                        Buy Now
-                      </button>
-                    </div>
-                  </>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => handleAddToCart(product.id, product.title, product.price, product.img)}
+                      className="flex-1 border border-[#0F3D2E] hover:bg-[#0F3D2E] hover:text-white py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all duration-300"
+                    >
+                      Add to Cart
+                    </button>
+                    <button 
+                      onClick={() => { handleAddToCart(product.id, product.title, product.price, product.img); }}
+                      className="flex-1 bg-gradient-to-r from-[#63C132] to-[#0F3D2E] hover:from-[#7AE441] hover:to-[#2D6B00] text-white py-3 rounded-full text-[10px] font-bold uppercase tracking-widest transition duration-300 shadow-[0_15px_40px_rgba(53,134,0,0.25)]"
+                    >
+                      Buy Now
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
           </div>
         ))}
       </div>
+
     </div>
   );
 }
 
 export default function ShopPage() {
   return (
-    <div className="min-h-screen bg-[#FAF7F0] text-[#102316] font-sans antialiased">
+    <div className="min-h-screen bg-[#FFFDF8] text-[#182218] font-sans antialiased overflow-x-hidden relative">
       <Header />
 
+      {/* Decorative oversized background word */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 text-giant select-none pointer-events-none uppercase">
+        NATURE
+      </div>
+
       {/* Hero Header */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#102316] to-[#16301E] text-white py-24 sm:py-32 text-center">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#0F3D2E] to-[#082018] text-[#FFFDF8] py-20 text-center border-b border-[#2F6B3D]/10">
+        {/* Background light rays */}
         <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute top-0 right-10 w-96 h-96 bg-[#7AA33C] rounded-full filter blur-[100px]"></div>
+          <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#D6F5C2] rounded-full filter blur-[120px]"></div>
         </div>
-        <div className="max-w-4xl mx-auto px-4 relative z-10 space-y-6">
-          <span className="text-[#7AA33C] font-extrabold text-[10px] sm:text-xs tracking-[0.3em] uppercase block font-bold">
+        
+        <div className="max-w-4xl mx-auto px-4 relative z-10 space-y-4">
+          <span className="text-[#63C132] font-extrabold text-[10px] sm:text-xs tracking-[0.3em] uppercase block font-bold">
             CURATED ORGANIC SELECTION
           </span>
-          <h1 className="font-serif text-4xl sm:text-6xl font-bold leading-tight">
+          <h1 className="font-serif text-4xl sm:text-6xl font-extrabold tracking-tight uppercase">
             Shop Pure Goodness
           </h1>
           <p className="text-white/70 max-w-xl mx-auto text-xs sm:text-sm leading-relaxed font-light">
