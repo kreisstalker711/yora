@@ -41,7 +41,7 @@ export default function HomePage() {
         const rect = storyVideoRef.current.getBoundingClientRect();
         const inView = rect.top < window.innerHeight && rect.bottom > 0;
         if (inView) {
-          storyVideoRef.current.play().catch(() => {});
+          storyVideoRef.current.play().catch(() => { });
         } else {
           storyVideoRef.current.pause();
         }
@@ -180,7 +180,7 @@ export default function HomePage() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            
+
             {/* Left Column: Heading */}
             <div className="lg:col-span-6 text-left space-y-8 animate-reveal-up">
               <div className="inline-flex items-center gap-2 px-4.5 py-2 rounded-full bg-[#63C132]/10 border border-[#63C132]/25 text-[#0F3D2E] text-[10px] font-extrabold uppercase tracking-widest">
@@ -188,13 +188,13 @@ export default function HomePage() {
                 Pure Single-Origin Press
               </div>
               <h1 className="font-serif text-5xl sm:text-7xl font-extrabold leading-[1.05] tracking-tight text-[#0F3D2E] uppercase">
-                Wood Pressed <br/>
+                Cold Pressed  <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#63C132] to-[#2F6B3D]">Purity</span>
               </h1>
               <p className="text-slate-600 text-sm sm:text-base max-w-lg leading-relaxed font-light">
                 Clarified naturally by gravity and sun, our traditional oils represent clean nourishment sourced directly from the soil of Udumalpet, Tamil Nadu.
               </p>
-              
+
               <div className="flex flex-wrap gap-4 pt-2">
                 <a
                   href="/shop"
@@ -326,18 +326,18 @@ export default function HomePage() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-            
+
             {/* Left Video in Glass Card */}
             <div className="lg:col-span-6 flex justify-center">
               <div className="glass-card bg-white/70 p-4 rounded-[3rem] shadow-2xl w-full max-w-lg relative">
                 <div className="absolute -inset-4 border border-[#C89B3C]/10 rounded-[3.5rem] pointer-events-none transform -rotate-2"></div>
                 <div className="relative rounded-[2rem] overflow-hidden aspect-[4/5] shadow-inner">
-                  <video 
+                  <video
                     ref={storyVideoRef}
-                    src="/story.mp4" 
-                    muted 
-                    loop 
-                    playsInline 
+                    src="/story.mp4"
+                    muted
+                    loop
+                    playsInline
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute bottom-6 left-6 bg-black/40 backdrop-blur-md text-white px-4 py-2 rounded-full text-[9px] uppercase tracking-wider font-extrabold flex items-center gap-2">
@@ -392,18 +392,17 @@ export default function HomePage() {
 
         {/* Timeline Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          
+
           {/* Left: Step navigation inside a Glass Card */}
           <div className="lg:col-span-5 space-y-4">
             {craftSteps.map((step, idx) => (
               <button
                 key={idx}
                 onClick={() => setActiveCraftStep(idx)}
-                className={`w-full text-left p-6.5 rounded-3xl transition-all duration-300 flex items-center justify-between border ${
-                  activeCraftStep === idx 
-                    ? "bg-white border-[#63C132]/30 shadow-xl" 
-                    : "bg-transparent border-transparent hover:bg-white/40"
-                }`}
+                className={`w-full text-left p-6.5 rounded-3xl transition-all duration-300 flex items-center justify-between border ${activeCraftStep === idx
+                  ? "bg-white border-[#63C132]/30 shadow-xl"
+                  : "bg-transparent border-transparent hover:bg-white/40"
+                  }`}
               >
                 <div>
                   <span className={`text-[9px] font-extrabold uppercase tracking-widest ${activeCraftStep === idx ? "text-[#63C132]" : "text-slate-400"}`}>
@@ -467,7 +466,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            
+
             {/* Product 1: Coconut */}
             <div className="glass-card bg-white/70 p-6 rounded-[2.5rem] shadow-xl flex flex-col justify-between hover:-translate-y-3 hover:shadow-2xl transition-all duration-500">
               <div className="space-y-6">
@@ -509,14 +508,14 @@ export default function HomePage() {
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-bold text-[#0F3D2E]">{formatPrice(250)}</span>
                   <div className="flex items-center border border-[#182218]/15 rounded-full overflow-hidden">
-                    <button 
+                    <button
                       onClick={() => updateQty("coconut", false)}
                       className="px-3 py-1 text-xs hover:bg-[#182218]/5 transition-colors font-bold"
                     >
                       -
                     </button>
                     <span className="px-3 text-xs font-bold text-[#0F3D2E]">{quantities.coconut}</span>
-                    <button 
+                    <button
                       onClick={() => updateQty("coconut", true)}
                       className="px-3 py-1 text-xs hover:bg-[#182218]/5 transition-colors font-bold"
                     >
@@ -575,14 +574,14 @@ export default function HomePage() {
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-bold text-[#0F3D2E]">{formatPrice(258)}</span>
                   <div className="flex items-center border border-[#182218]/15 rounded-full overflow-hidden">
-                    <button 
+                    <button
                       onClick={() => updateQty("groundnut", false)}
                       className="px-3 py-1 text-xs hover:bg-[#182218]/5 transition-colors font-bold"
                     >
                       -
                     </button>
                     <span className="px-3 text-xs font-bold text-[#0F3D2E]">{quantities.groundnut}</span>
-                    <button 
+                    <button
                       onClick={() => updateQty("groundnut", true)}
                       className="px-3 py-1 text-xs hover:bg-[#182218]/5 transition-colors font-bold"
                     >
@@ -641,14 +640,14 @@ export default function HomePage() {
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-bold text-[#0F3D2E]">{formatPrice(160)}</span>
                   <div className="flex items-center border border-[#182218]/15 rounded-full overflow-hidden">
-                    <button 
+                    <button
                       onClick={() => updateQty("sesame", false)}
                       className="px-3 py-1 text-xs hover:bg-[#182218]/5 transition-colors font-bold"
                     >
                       -
                     </button>
                     <span className="px-3 text-xs font-bold text-[#0F3D2E]">{quantities.sesame}</span>
-                    <button 
+                    <button
                       onClick={() => updateQty("sesame", true)}
                       className="px-3 py-1 text-xs hover:bg-[#182218]/5 transition-colors font-bold"
                     >
@@ -708,8 +707,8 @@ export default function HomePage() {
                 stars: 5,
               }
             ].map((review, i) => (
-              <div 
-                key={i} 
+              <div
+                key={i}
                 className="glass-card bg-white/80 p-8.5 rounded-[2.5rem] shadow-xl hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 flex flex-col justify-between"
               >
                 <div className="space-y-4">
