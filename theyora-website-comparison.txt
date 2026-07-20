@@ -1,0 +1,145 @@
+================================================================
+YORA WEBSITE COMPARISON
+Live production site (theyora.com) vs. New rebuild (this project)
+Prepared: 2026-07-12
+================================================================
+
+--------------------------------------------------------------
+1. WHAT THE TWO SITES ARE
+--------------------------------------------------------------
+
+theyora.com (LIVE)
+- Runs on Shopify (confirmed by /collections/ URL structure, "Default
+  Title" variant language, cancellation-policy wording on subscriptions,
+  and store-pickup messaging - all Shopify/Shopify-app conventions).
+- Fully transactional: real payment processing, real accounts, real
+  order fulfillment, connected to a subscription app (Shopify
+  Recharge-style) and Shopify Markets for currency/region.
+- Visual design: plain, generic neutral palette (beige/white/brown),
+  no distinct visual identity.
+
+THIS REBUILD (yora/ Next.js project)
+- Built from scratch on Next.js 16 + Tailwind v4 + Firebase
+  (Auth + Firestore).
+- Payment intentionally excluded per project scope - checkout is a
+  "demo checkout" that writes a real Firestore order but charges
+  nothing.
+- Visual design: custom professional design system (deep forest green
+  + muted sage + gold palette, Fraunces/Inter Tight typography,
+  restrained card surfaces) - a deliberate upgrade over both the old
+  prototype and the live site's generic look.
+- Real photography from the brand's own product shoot is used
+  throughout (product galleries, blog, About page, category cards).
+
+--------------------------------------------------------------
+2. FEATURE COMPARISON TABLE
+--------------------------------------------------------------
+
+FEATURE                          | LIVE (theyora.com) | THIS REBUILD
+----------------------------------|---------------------|------------------
+Real payment processing          | YES                 | NO (by design - demo checkout only)
+User accounts (signup/login)      | YES                 | YES (Firebase Auth)
+Order history                     | YES                 | YES (Firestore-backed)
+Product variants (size/price)     | YES                 | YES (250ml-5L per product)
+Subscribe & Save                  | YES (real recurring billing) | YES (UI + flag only, no real recurring charge)
+Product reviews                   | YES (10 shown, with photos-style testimonials) | YES (Firestore, real submit, no photo uploads)
+Wishlist                          | Not confirmed on live site | Partial - only on Home page, not persisted, not account-wide
+Currency selector                 | YES (INR/USD + more, Shopify Markets) | YES (INR/USD only, static conversion rate)
+Region/country selector           | YES (e.g. "Canada INR", "India INR") | NO
+Language selector                 | Implied by region selector | NO
+Global site search                | Not confirmed, but standard Shopify feature | Partial - only within the Shop page, not in header/site-wide
+Category/shop filtering           | YES (collections: Bestseller, Combo, All Products) | YES (category tabs on Shop page)
+Store pickup option                | YES                | NO
+Coupon / promo codes               | Likely (Shopify default) | NO
+Marketplace links (Amazon, Flipkart, Blinkit, JioMart) | YES | NO
+Trust/certification badges (ISO, FSSAI, Vegan, Halal, FDA, NBA) | YES (7 badges) | Partial - ISO/FSSAI shown on Home "Certified Quality" section; Vegan/Halal/FDA/NBA/QRO badges not present
+Payment method badges (Visa, Mastercard, RuPay, etc.) | YES | NO (no payment gateway)
+Social media links (FB, Instagram, YouTube, LinkedIn) | YES | NO
+Legal/policy pages (Privacy, Refund, Shipping, Terms) | YES (dedicated pages) | NO (Footer links point to /contact as placeholder)
+Newsletter signup                  | YES                | YES (Firestore-backed, real persistence)
+Contact form                       | Implied            | YES (Firestore-backed)
+Wholesale/bulk inquiry form         | Not confirmed on live site | YES (Firestore-backed) - REBUILD HAS THIS, LIVE SITE DOESN'T (confirmed)
+Blog / content section ("Stories") | YES (Shopify blog app likely) | YES, with real curated photography
+Product detail pages with galleries | YES (multi-image carousel) | YES (multi-image gallery with thumbnails)
+Announcement bar / promo banner     | YES (2 rotating messages incl. bundle deal) | YES (3 rotating messages, no bundle-deal style promo)
+Limited-time bundle offers ("Buy 2 x 250ml EVCO for ₹500") | YES | NO
+Visual design system / brand identity | Generic, plain     | Custom, cohesive, "professional" design system
+Live chat widget                   | NO (not detected)  | NO
+Loyalty / rewards program           | NO (not detected)  | NO
+Countdown timers / urgency elements | NO (not detected)  | NO
+
+--------------------------------------------------------------
+3. FEATURES WE ARE MISSING (prioritized)
+--------------------------------------------------------------
+
+HIGH PRIORITY (core e-commerce trust/conversion features):
+1. Real payment gateway - out of scope by explicit project decision,
+   but this is the single biggest functional gap vs. the live site.
+2. Coupon / promo code field at checkout - live Shopify sites have
+   this by default; ours has none.
+3. Legal policy pages - Privacy Policy, Refund Policy, Shipping Policy,
+   Terms of Service currently just redirect to the Contact page. A
+   real e-commerce site needs actual policy content (this is also a
+   trust/compliance issue, not just a nice-to-have).
+4. Full certification badge set - live site shows 7 badges (Vegan,
+   ISO, FDA, QRO, FSSAI, NBA, Halal); we only show ISO + FSSAI.
+
+MEDIUM PRIORITY (discovery & reach):
+5. Site-wide search - ours only searches within the Shop page;
+   there's no search icon/box in the header reachable from any page.
+6. Region/country + language selector - live site supports multiple
+   regions (e.g. Canada, India) with associated currencies; we only
+   toggle INR/USD with a static conversion rate.
+7. Marketplace/retailer links (Amazon, Flipkart, Blinkit, JioMart) -
+   the live site cross-promotes its presence on these platforms in
+   the footer; we have none of this.
+8. Social media links in the footer (Facebook, Instagram, YouTube,
+   LinkedIn) - currently absent from our Footer component.
+
+LOWER PRIORITY (polish/nice-to-have):
+9. Store pickup option at checkout.
+10. Persistent, account-wide wishlist - ours only exists as page-local
+    state on the Home page and is lost on refresh; not available on
+    Shop or product detail pages, not saved to Firestore.
+11. Limited-time bundle promotions in the announcement bar (e.g. the
+    live site's "Buy 2 x 250ml EVCO for ₹500").
+12. Payment method badges (Visa/Mastercard/RuPay/etc.) - not
+    applicable until a real payment gateway is added.
+13. Real recurring billing behind "Subscribe & Save" - currently just
+    a UI flag stored on the order, no actual scheduled re-charge.
+
+--------------------------------------------------------------
+4. WHAT WE HAVE THAT THE LIVE SITE DOESN'T
+--------------------------------------------------------------
+
+- A cohesive, custom professional design system (the live site is
+  visually generic - plain beige/white/brown with no distinct
+  identity).
+- A wholesale/bulk-inquiry form connected to a real backend
+  (not confirmed to exist on the live site).
+- Real, curated on-brand photography deliberately placed across
+  product galleries, the About page, and every blog article (the
+  live site's blog/story content wasn't inspected in enough depth to
+  confirm equivalent photo curation).
+- A from-scratch, fully-owned codebase (Next.js/React) vs. a
+  Shopify-templated storefront - meaning far more flexibility to
+  extend, but also meaning the "batteries included" Shopify features
+  (search, discounts, multi-region tax/shipping, apps ecosystem) all
+  have to be rebuilt manually if wanted.
+
+--------------------------------------------------------------
+5. RECOMMENDATION
+--------------------------------------------------------------
+
+If the goal is to eventually replace theyora.com with this rebuild,
+close the gaps in this order:
+  1. Real payment gateway (Razorpay is the natural fit for an
+     India-based INR/USD store) - unblocks everything downstream.
+  2. Legal policy pages (Privacy/Refund/Shipping/Terms) - required
+     for any real payment gateway's compliance checks anyway.
+  3. Site-wide search + coupon codes - highest-impact conversion
+     features that are currently easy gaps.
+  4. Full certification badge set + social links + marketplace links -
+     low-effort trust/reach additions, mostly footer/content work.
+  5. Persistent wishlist, region/language selector, real subscription
+     billing - larger effort, lower urgency; do after the above.

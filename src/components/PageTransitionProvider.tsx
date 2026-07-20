@@ -22,9 +22,9 @@ export default function PageTransitionProvider({ children }: { children: React.R
     <AnimatePresence mode="wait" initial={false}>
       <motion.div
         key={pathname}
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -12 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
         transition={{ duration: motionConfig.durationShort, ease: motionConfig.easeOut }}
         className="w-full min-h-full flex flex-col"
       >

@@ -1,21 +1,24 @@
 import type { Metadata } from "next";
-import { Outfit, Inter } from "next/font/google";
+import { Fraunces, Inter_Tight } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
-import Loader from "@/src/components/Loader";
-import SmoothScroll from "@/src/components/SmoothScroll";
-import PageTransitionProvider from "@/src/components/PageTransitionProvider";
+import { AuthProvider } from "@/src/context/AuthContext";
+import { CurrencyProvider } from "@/src/context/CurrencyContext";
+import { CartProvider } from "@/src/context/CartContext";
+import { WishlistProvider } from "@/src/context/WishlistContext";
 
-const outfit = Outfit({
+const fraunces = Fraunces({
   variable: "--font-serif",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  weight: ["400", "500", "600", "700", "900"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
-const inter = Inter({
+const interTight = Inter_Tight({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -32,11 +35,17 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${outfit.variable} ${inter.variable} h-full antialiased`}
+      className={`${fraunces.variable} ${interTight.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#FFFDF8] text-[#182218] selection:bg-[#63C132]/20 selection:text-[#0F3D2E]">
-        <Loader />
-        {children}
+      <body className="min-h-full flex flex-col bg-cream text-ink selection:bg-accent/20 selection:text-primary">
+        <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
+        <AuthProvider>
+          <CurrencyProvider>
+            <CartProvider>
+              <WishlistProvider>{children}</WishlistProvider>
+            </CartProvider>
+          </CurrencyProvider>
+        </AuthProvider>
       </body>
     </html>
   );
